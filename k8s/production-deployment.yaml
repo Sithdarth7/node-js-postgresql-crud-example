@@ -16,6 +16,15 @@ spec:
     spec:
       containers:
       - name: production-nodejs-app
-        image: dummy-repository/production-nodejs-app
-        ports:
-        - containerPort: 8080
+      image: dummy-repository/production-nodejs-app
+      ports:
+      - containerPort: 8080
+      env:
+      - name: DB_HOST
+        value: postgres
+      - name: DB_USER
+        value: postgres
+      - name: DB_PASSWORD
+        value: 123
+      - name: DB_NAME
+        value: testdb
