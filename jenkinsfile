@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+    def stageCheck () {
+        def stage = false;
+        if (env.BRANCH_NAME =~ /-staging*/) {
+            return 'staging'
+        } else if (env.BRANCH_NAME =~ /-prod*/) {
+            return 'production'
+        } else {
+            sh "exit 1"
+        }
+    }
+    stages {
+        stage('Build Node.js App') {
+            steps {
+                // Checkout source code based on branch
+                cleanWs()
+                checkout scm
+                script {
+                    git branch: env.BRANCH_NAME
+                }
+                // Build Node.js app
+                sh "npm install"
+                sh "npm run build"
+            }
+        }
+        stage('Build and Push Docker Image') {
+            steps {
+                // Set image name based on branch
+                script {
+                    imageName = env.BRANCH_NAME == 'production-branch' ? 'production-nodejs-app' : 'staging-nodejs-app'
+                }
+                try {
+                    // cp node dockerfile to root dir
+                    sh "cp src/Dockerfile Dockerfile"
+                    // Build and push Docker image
+                    sh "docker build -t dummy-repository/${imageName} ."
+                    sh "docker push dummy-repository/${imageName}"
+                }
+                catch((err)) {
+                    sh "echo build fail"
+                    sh "exit 1"
+                }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                // Adjust deployment manifest for branch
+                sh "sed -i 's/<image-name>/${imageName}/g' deployment.yaml"
+                // Deploy to Kubernetes cluster
+                sh "kubectl apply -f deployment.yaml"
+            }
+        }
+    }
+}
