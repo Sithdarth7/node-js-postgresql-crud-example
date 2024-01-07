@@ -18,7 +18,7 @@ pipeline {
             steps {
                 // Set image name based on branch
                 script {
-                    imageName = env.BRANCH_NAME == 'production-branch' ? 'production' : 'staging'
+                    imageName = env.BRANCH_NAME == 'master' ? 'production' : 'staging'
                 }
                 try {
                     // cp node dockerfile to root dir
