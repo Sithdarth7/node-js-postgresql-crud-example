@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: production-nodejs-app-deployment
+  labels:
+    app: production-nodejs-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: production-nodejs-app
+  template:
+    metadata:
+      labels:
+        app: production-nodejs-app
+    spec:
+      containers:
+      - name: production-nodejs-app
+        image: dummy-repository/production-nodejs-app
+        ports:
+        - containerPort: 8080
