@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: production-nodejs-app-service
+  labels:
+    app: production-nodejs-app
+spec:
+  selector:
+    app: production-nodejs-app
+  ports:
+  - port: 4000  # External port
+    targetPort: 8080  # Container port

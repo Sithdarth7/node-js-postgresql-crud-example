@@ -7,7 +7,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: production-deployment
+    name: production-nodejs-app-deployment
   minReplicas: 2
   maxReplicas: 5
   metrics:
