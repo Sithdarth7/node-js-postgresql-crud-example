@@ -9,7 +9,7 @@ services:
   postgres:
     container_name: postgres
     build: ./postgres
-    environment:
+    environment: #config postgres db according to src\app\config\db.config.js
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: testdb
