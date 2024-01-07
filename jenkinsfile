@@ -36,8 +36,8 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 // Adjust deployment manifest for each stage
-                sh "sed -i 's/<image-name>/${imageName}-nodejs-app/g' ${imageName}-deployment.yaml"
-                sh "kubectl apply -f ${imageName}-deployment.yaml"
+                sh "sed -i 's/<image-name>/${imageName}-nodejs-app/g' k8s/${imageName}-deployment.yaml"
+                sh "kubectl apply -f k8s/${imageName}-deployment.yaml"
             }
         }
     }
