@@ -1,15 +1,5 @@
 pipeline {
     agent any
-    def stageCheck () {
-        def stage = false;
-        if (env.BRANCH_NAME =~ /-staging*/) {
-            return 'staging'
-        } else if (env.BRANCH_NAME =~ /-prod*/) {
-            return 'production'
-        } else {
-            sh "exit 1"
-        }
-    }
     stages {
         stage('Build Node.js App') {
             steps {
@@ -28,14 +18,14 @@ pipeline {
             steps {
                 // Set image name based on branch
                 script {
-                    imageName = env.BRANCH_NAME == 'production-branch' ? 'production-nodejs-app' : 'staging-nodejs-app'
+                    imageName = env.BRANCH_NAME == 'production-branch' ? 'production' : 'staging'
                 }
                 try {
                     // cp node dockerfile to root dir
                     sh "cp src/Dockerfile Dockerfile"
                     // Build and push Docker image
-                    sh "docker build -t dummy-repository/${imageName} ."
-                    sh "docker push dummy-repository/${imageName}"
+                    sh "docker build -t dummy-repository/${imageName}-nodejs-app ."
+                    sh "docker push dummy-repository/${imageName}-nodejs-app"
                 }
                 catch((err)) {
                     sh "echo build fail"
@@ -45,10 +35,9 @@ pipeline {
         }
         stage('Deploy to Kubernetes') {
             steps {
-                // Adjust deployment manifest for branch
-                sh "sed -i 's/<image-name>/${imageName}/g' deployment.yaml"
-                // Deploy to Kubernetes cluster
-                sh "kubectl apply -f deployment.yaml"
+                // Adjust deployment manifest for each stage
+                sh "sed -i 's/<image-name>/${imageName}-nodejs-app/g' ${imageName}-deployment.yaml"
+                sh "kubectl apply -f ${imageName}-deployment.yaml"
             }
         }
     }
