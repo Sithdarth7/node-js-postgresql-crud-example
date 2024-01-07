@@ -1,0 +1,27 @@
+Test 1: refer to README.md in root directory
+
+Test 2:
+1. jenkins
+Pros    jenkins เป็นopen source ที่ถือว่าเป็น global standard มีการใช้งานแพร่หลาย มี plugin ให้ใช้งานเยอะ และมีความ dynamic สูงที่สุด สามารถใช้งานได้ครอบคลุมทุกประเภทของการพัฒนา ทั้ง CI CD รวมไปถึงการ test ต่างๆด้วย
+Cons    jenkins จำเป็นต้องมีการ maintain สม่ำเสมอ ต้องการ การ configurations ที่เยอะ (แลกมากับการที่ตัว tools ก้สามารถทำงานได้หลายประเภท) การอัพเดท framework ต่างๆ ต้องทำถึง level master, agents ด้วย
+- Cost ถูกที่สุด (แต่ก้อาจแพงที่สุดได้ ถ้าไม่มีการทำ agent scaling ที่ดี)
+- Flexible ดีที่สุด ทำได้ทุกอย่าง
+- Performance ดี แต่หากต้อง provision agent ที่มี size หลากหลายเพื่อรองรับงานหลายประเภท ก้จะเพิ่มความซับซ้อนในการ maintain
+- Security ปานกลาง หากต้องการ security ที่สูงจะต้องมีการ config ที่รัดกุม รวมถึง agent แต่ละตัวจำเป็นต้อง access provider ในการ execute deploy command ทำให้มีโอกาสที่ agent จะถูก hijack ไปทำอะไรแปลกๆได้
+2. bitbucket pipeline
+Pros    เป็น ci/cd tool จาก atlassian ทำให้สามารถเชื่อมต่อ plugin ต่างๆเพื่อ link issue และสร้างความ visibility ให้กับ sprint ได้, UI สวยงาม จัดการ project ที่มี pipeline จำนวนมากได้ดีกว่า github actions
+Cons    ราคาแพง การใช้งานไม่ต่างกับ github actions แต่มี plugin ต่างๆน้อยกว่า github actions
+- Cost แพง(ของatlassian ไม่เคยถูก T_T)
+- Flexible น้อยที่สุด
+- Performance ดี
+- Security ดีที่สุด แบ่ง role ได้ตาม position ใน team ทำให้จัดการกับ access และ permission ได้ง่ายที่สุด
+3. github actions
+Pros    ใช้งานง่าย มี plugin support การทำ workflows ครอบคลุม(มี MACOS ในขณะที่เจ้าอื่นจะมีแค่ windows, linux ถ้าต้องการ build บน MACOS จำเป็นต้อง host เอง) และมีตัวอย่างการใช้งานเยอะ เพราะมีฐานผู้ใช้ค่อนข้างสูง, ราคาถูก และมี 3rd party runner host ที่ราคาถูกกว่า, สามารถเขียน custom actions ได้เอง
+Cons    view ของ actions ดูยาก ถ้า project มี pipeline จำนวนมาก อาจจะต้องพึ่ง documentation tool/เขียนเว็ปหน้าบ้าน อื่นๆในการเข้าถึง pipeline แทนการเข้าไปดูที่ tab actions ตรงๆ
+- Cost ถูกมาก เทียบกับ efford ในการ maintain เพราะจะถูกคิดเงินเฉพาะตัว runner (แถมไม่ต้อง host master ที่ต้องรันแทบจะตลอดเวลา)
+- Flexible ดีมาก ทำได้แทบทุกอย่าง ถ้ามีบางอย่างทำไม่ได้ก้สามารถเขียน custom actions มาใช้เองได้
+- Performance ดีมาก checkout เร็วที่สุด และหากจัดเก็บ image ไว้ที่ github repos ก้จะยิ่ง push/pull เร็วขึ้นไปอีก size ของ runner มีความหลากหลาย
+- Security ดีที่สุด มีการstore secret และหยิบ secret มาใช้, มี plugin ในการเชื่อมต่อแบบ saml ทำให้ไม่ต้อง expose secret ต่างๆ แต่การ execute pipeline ยังมีความหละหลวม ทำให้บางครั้ง pipeline ที่มี impact สูง อาจถูกสั่งรันโดยไม่ได้รับอนุญาติได้ ทำให้ต้องมีการ config role ที่ฝั่ง github organize เพิ่ม
+
+
+Test 3: refer to /k8s
