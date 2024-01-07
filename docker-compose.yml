@@ -1,5 +1,26 @@
 services:
   nginx:
+    container_name: nginx
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - nodejs
   postgres:
+    container_name: postgres
+    build: ./postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: testdb
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
   nodejs:
+    container_name: nodejs
+    build: ./src
+    environment:
+      - DATABASE_URL=postgres://postgres:123@postgres:5432/testdb
+    ports:
+      - "8080:8080"
 volumes:
+  postgres-volumes:
