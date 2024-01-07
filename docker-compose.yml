@@ -20,7 +20,5 @@ services:
     build: ./src
     environment:
       - DATABASE_URL=postgres://postgres:123@postgres:5432/testdb
-    ports:
-      - "8080:8080"
 volumes:
   postgres-volume:
